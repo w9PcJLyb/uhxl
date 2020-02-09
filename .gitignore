@@ -1,0 +1,10 @@
+venv
+*.pyc
+.directory
+.gitignore
+.~*
+~*
+.idea
+/bin
+/lib
+/include
