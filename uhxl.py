@@ -2,6 +2,7 @@ import pandas as pd
 from pandas.io.excel._util import _maybe_convert_usecols
 from pandas.io.excel._openpyxl import _OpenpyxlReader
 from openpyxl import load_workbook
+from openpyxl.cell.cell import MergedCell
 from openpyxl.worksheet.worksheet import Worksheet
 
 
@@ -85,7 +86,7 @@ class UhOpenpyxlReader(_OpenpyxlReader):
         if self.hide_sheets:
             if name in [s.title for s in self.hidden_sheets]:
                 raise KeyError(
-                    "Worksheet '{}' exist but hidden. Set skip_hidden_sheets=True to get this sheet.".format(
+                    "Worksheet '{}' exist but hidden. Set hide_sheets=True to get this sheet.".format(
                         name
                     )
                 )
@@ -169,6 +170,11 @@ class UhOpenpyxlReader(_OpenpyxlReader):
             cell.column = new_col
 
         return visible_cells
+
+    def _convert_cell(self, cell, convert_float):
+        if isinstance(cell, MergedCell):
+            return cell.value
+        return super()._convert_cell(cell, convert_float)
 
     def get_sheet_data(self, sheet, convert_float):
         sheet_cells = sheet._cells
