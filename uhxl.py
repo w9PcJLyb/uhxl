@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas.io.common import stringify_path
 from pandas.io.excel._util import _maybe_convert_usecols
 from pandas.io.excel._openpyxl import _OpenpyxlReader
 from openpyxl import load_workbook
@@ -25,8 +26,9 @@ class UhExcelFile(pd.ExcelFile):
     """
 
     def __init__(self, io, hide_sheets=True, hide_columns=True, hide_rows=True):
-        super().__init__(io, engine="openpyxl")
-        # ignore engine, redefine reader
+        self.engine = "openpyxl"
+        self.io = io
+        self._io = stringify_path(io)
         self._reader = UhOpenpyxlReader(
             self._io,
             hide_sheets=hide_sheets,
